@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Trophy, RefreshCw } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const quizQuestions = [
   {
@@ -25,27 +27,37 @@ const quizQuestions = [
 ];
 
 const QuizSection = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const { toast } = useToast();
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSubmit = async () => {
+    if (!selectedAnswer) {
+      toast.error("Please select an answer");
+      return;
+    }
+
     const isCorrect = parseInt(selectedAnswer) === quizQuestions[currentQuestion].correctAnswer;
     
     if (isCorrect) {
       setScore(score + 1);
-      toast({
-        title: "Correct! 🎉",
-        description: "Great job! Keep going!",
-      });
+      toast.success("Correct! 🎉");
     } else {
-      toast({
-        title: "Not quite!",
-        description: "Don't worry, learning is a journey!",
-        variant: "destructive",
-      });
+      toast.error("Not quite right. Keep learning! 📚");
     }
 
     if (currentQuestion < quizQuestions.length - 1) {
@@ -53,6 +65,15 @@ const QuizSection = () => {
       setSelectedAnswer("");
     } else {
       setShowResult(true);
+      
+      if (user) {
+        await supabase.from("quiz_scores").insert({
+          user_id: user.id,
+          score: score + (isCorrect ? 1 : 0),
+          total_questions: quizQuestions.length,
+        });
+        toast.success("Quiz score saved!");
+      }
     }
   };
 
