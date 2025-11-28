@@ -1,7 +1,25 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { UserProfile } from "./UserProfile";
 
 const Navigation = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -28,6 +46,7 @@ const Navigation = () => {
             <Button variant="ghost" onClick={() => scrollToSection("quiz")}>
               Quiz
             </Button>
+            <UserProfile user={user} />
           </div>
         </div>
       </div>
