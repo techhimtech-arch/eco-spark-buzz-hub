@@ -8,30 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Trophy, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
-const quizQuestions = [
-  {
-    question: "What percentage of the Earth's surface is covered by water?",
-    options: ["50%", "60%", "71%", "80%"],
-    correctAnswer: 2,
-  },
-  {
-    question: "Which renewable energy source is the most widely used globally?",
-    options: ["Solar", "Wind", "Hydroelectric", "Geothermal"],
-    correctAnswer: 2,
-  },
-  {
-    question: "How long does it take for a plastic bottle to decompose?",
-    options: ["50 years", "100 years", "450 years", "1000 years"],
-    correctAnswer: 2,
-  },
-];
-
 const QuizSection = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [questions, setQuestions] = useState<any[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -42,8 +26,22 @@ const QuizSection = () => {
       setUser(session?.user ?? null);
     });
 
+    fetchQuestions();
+
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchQuestions = async () => {
+    const { data } = await supabase
+      .from("quiz_questions")
+      .select("*")
+      .limit(10);
+
+    if (data && data.length > 0) {
+      setQuestions(data);
+    }
+    setLoading(false);
+  };
 
   const handleSubmit = async () => {
     if (!selectedAnswer) {
@@ -51,7 +49,7 @@ const QuizSection = () => {
       return;
     }
 
-    const isCorrect = parseInt(selectedAnswer) === quizQuestions[currentQuestion].correctAnswer;
+    const isCorrect = parseInt(selectedAnswer) === questions[currentQuestion].correct_answer;
     
     if (isCorrect) {
       setScore(score + 1);
@@ -60,7 +58,7 @@ const QuizSection = () => {
       toast.error("Not quite right. Keep learning! 📚");
     }
 
-    if (currentQuestion < quizQuestions.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer("");
     } else {
@@ -70,9 +68,64 @@ const QuizSection = () => {
         await supabase.from("quiz_scores").insert({
           user_id: user.id,
           score: score + (isCorrect ? 1 : 0),
-          total_questions: quizQuestions.length,
+          total_questions: questions.length,
         });
+        
+        checkAndAwardBadges(score + (isCorrect ? 1 : 0));
         toast.success("Quiz score saved!");
+      }
+    }
+  };
+
+  const checkAndAwardBadges = async (finalScore: number) => {
+    if (!user) return;
+
+    const { data: quizScores } = await supabase
+      .from("quiz_scores")
+      .select("*")
+      .eq("user_id", user.id);
+
+    if (!quizScores) return;
+
+    const badges = [];
+    
+    // First Steps badge
+    if (quizScores.length === 1) {
+      badges.push("First Steps");
+    }
+
+    // Knowledge Seeker badge
+    if (quizScores.length === 5) {
+      badges.push("Knowledge Seeker");
+    }
+
+    // Eco Warrior badge
+    if (quizScores.length === 10) {
+      badges.push("Eco Warrior");
+    }
+
+    // Perfect Score badge
+    if (finalScore === questions.length) {
+      badges.push("Perfect Score");
+    }
+
+    // Award badges
+    for (const badgeName of badges) {
+      const { data: badgeData } = await supabase
+        .from("badges")
+        .select("id")
+        .eq("name", badgeName)
+        .maybeSingle();
+
+      if (badgeData) {
+        const { error } = await supabase.from("user_badges").insert({
+          user_id: user.id,
+          badge_id: badgeData.id,
+        });
+        
+        if (!error) {
+          toast.success(`Badge earned: ${badgeName}!`);
+        }
       }
     }
   };
@@ -82,7 +135,28 @@ const QuizSection = () => {
     setSelectedAnswer("");
     setScore(0);
     setShowResult(false);
+    fetchQuestions();
   };
+
+  if (loading) {
+    return (
+      <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-muted-foreground">Loading quiz...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-muted-foreground">No quiz questions available yet. Check back soon!</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
@@ -101,10 +175,10 @@ const QuizSection = () => {
             {!showResult ? (
               <>
                 <CardTitle className="text-2xl">
-                  Question {currentQuestion + 1} of {quizQuestions.length}
+                  Question {currentQuestion + 1} of {questions.length}
                 </CardTitle>
                 <CardDescription className="text-lg">
-                  {quizQuestions[currentQuestion].question}
+                  {questions[currentQuestion].question}
                 </CardDescription>
               </>
             ) : (
@@ -112,7 +186,7 @@ const QuizSection = () => {
                 <Trophy className="w-16 h-16 text-primary mx-auto mb-4" />
                 <CardTitle className="text-3xl mb-2">Quiz Complete!</CardTitle>
                 <CardDescription className="text-xl">
-                  You scored {score} out of {quizQuestions.length}
+                  You scored {score} out of {questions.length}
                 </CardDescription>
               </div>
             )}
@@ -122,7 +196,7 @@ const QuizSection = () => {
               <>
                 <RadioGroup value={selectedAnswer} onValueChange={setSelectedAnswer}>
                   <div className="space-y-4">
-                    {quizQuestions[currentQuestion].options.map((option, index) => (
+                    {questions[currentQuestion].options.map((option: string, index: number) => (
                       <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
                         <RadioGroupItem value={index.toString()} id={`option-${index}`} />
                         <Label 
@@ -147,9 +221,9 @@ const QuizSection = () => {
             ) : (
               <div className="text-center space-y-4">
                 <p className="text-lg text-foreground">
-                  {score === quizQuestions.length 
+                  {score === questions.length 
                     ? "Perfect score! You're a sustainability champion! 🌟" 
-                    : score >= quizQuestions.length / 2
+                    : score >= questions.length / 2
                     ? "Great effort! Keep learning about our planet! 🌍"
                     : "Every step towards learning helps! Keep going! 🌱"}
                 </p>
@@ -166,4 +240,5 @@ const QuizSection = () => {
   );
 };
 
+export { QuizSection };
 export default QuizSection;
