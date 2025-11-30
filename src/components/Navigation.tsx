@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Leaf, LayoutDashboard, Shield } from "lucide-react";
+import { Leaf, LayoutDashboard, Shield, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "./UserProfile";
 import { Link } from "react-router-dom";
@@ -63,12 +63,20 @@ const Navigation = () => {
               Quiz
             </Button>
             {user && (
-              <Link to="/dashboard">
-                <Button variant="ghost" size="sm">
-                  <LayoutDashboard className="h-4 w-4 mr-2" />
-                  Dashboard
-                </Button>
-              </Link>
+              <>
+                <Link to="/dashboard">
+                  <Button variant="ghost" size="sm">
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Button>
+                </Link>
+                <Link to="/profile">
+                  <Button variant="ghost" size="sm">
+                    <UserCircle className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                </Link>
+              </>
             )}
             {isAdmin && (
               <Link to="/admin">
