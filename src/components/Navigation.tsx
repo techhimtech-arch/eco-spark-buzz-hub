@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Leaf, LayoutDashboard, Shield, UserCircle } from "lucide-react";
+import { Leaf, LayoutDashboard, Shield, UserCircle, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "./UserProfile";
 import { Link } from "react-router-dom";
@@ -68,6 +68,12 @@ const Navigation = () => {
                   <Button variant="ghost" size="sm">
                     <LayoutDashboard className="h-4 w-4 mr-2" />
                     Dashboard
+                  </Button>
+                </Link>
+                <Link to="/leaderboard">
+                  <Button variant="ghost" size="sm">
+                    <Trophy className="h-4 w-4 mr-2" />
+                    Leaderboard
                   </Button>
                 </Link>
                 <Link to="/profile">
