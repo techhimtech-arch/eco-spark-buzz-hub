@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Upload, Calendar, Award, TrendingUp, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAchievements } from "@/hooks/useAchievements";
+import { AchievementCelebration } from "@/components/AchievementCelebration";
 
 interface Profile {
   id: string;
@@ -38,6 +40,7 @@ export default function Profile() {
   const [fullName, setFullName] = useState("");
   const [bio, setBio] = useState("");
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
+  const { celebratingAchievement, closeCelebration } = useAchievements();
 
   useEffect(() => {
     checkUser();
@@ -200,7 +203,12 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <>
+      <AchievementCelebration
+        achievement={celebratingAchievement}
+        onClose={closeCelebration}
+      />
+      <div className="min-h-screen bg-background py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <Card className="mb-8">
           <CardHeader>
@@ -343,5 +351,6 @@ export default function Profile() {
         </Card>
       </div>
     </div>
+    </>
   );
 }

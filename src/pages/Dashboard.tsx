@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Trophy, Award, Leaf, TrendingUp, BookOpen, Target } from "lucide-react";
 import { toast } from "sonner";
+import { useAchievements } from "@/hooks/useAchievements";
+import { AchievementCelebration } from "@/components/AchievementCelebration";
 
 interface DashboardProps {
   user: User;
@@ -24,12 +26,15 @@ export const Dashboard = ({ user }: DashboardProps) => {
     totalActions: 0,
     co2Impact: 0,
   });
+  const { celebratingAchievement, closeCelebration, checkAndAwardAchievements } = useAchievements();
 
   useEffect(() => {
     if (user) {
       fetchDashboardData();
+      // Check for new achievements on page load
+      checkAndAwardAchievements(user.id);
     }
-  }, [user]);
+  }, [user, checkAndAwardAchievements]);
 
   const fetchDashboardData = async () => {
     // Fetch quiz history
@@ -89,7 +94,12 @@ export const Dashboard = ({ user }: DashboardProps) => {
     : 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <AchievementCelebration
+        achievement={celebratingAchievement}
+        onClose={closeCelebration}
+      />
+      <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8">Your Sustainability Journey</h1>
 
       {/* Impact Metrics Cards */}
@@ -278,5 +288,6 @@ export const Dashboard = ({ user }: DashboardProps) => {
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 };

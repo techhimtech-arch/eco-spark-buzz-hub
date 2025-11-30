@@ -7,6 +7,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Trophy, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { useAchievements } from "@/hooks/useAchievements";
+import { AchievementCelebration } from "./AchievementCelebration";
 
 const QuizSection = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -16,6 +18,7 @@ const QuizSection = () => {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { celebratingAchievement, closeCelebration, checkAndAwardAchievements } = useAchievements();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -71,64 +74,16 @@ const QuizSection = () => {
           total_questions: questions.length,
         });
         
-        checkAndAwardBadges(score + (isCorrect ? 1 : 0));
+        // Check for achievements
+        setTimeout(() => {
+          checkAndAwardAchievements(user.id);
+        }, 1000);
+        
         toast.success("Quiz score saved!");
       }
     }
   };
 
-  const checkAndAwardBadges = async (finalScore: number) => {
-    if (!user) return;
-
-    const { data: quizScores } = await supabase
-      .from("quiz_scores")
-      .select("*")
-      .eq("user_id", user.id);
-
-    if (!quizScores) return;
-
-    const badges = [];
-    
-    // First Steps badge
-    if (quizScores.length === 1) {
-      badges.push("First Steps");
-    }
-
-    // Knowledge Seeker badge
-    if (quizScores.length === 5) {
-      badges.push("Knowledge Seeker");
-    }
-
-    // Eco Warrior badge
-    if (quizScores.length === 10) {
-      badges.push("Eco Warrior");
-    }
-
-    // Perfect Score badge
-    if (finalScore === questions.length) {
-      badges.push("Perfect Score");
-    }
-
-    // Award badges
-    for (const badgeName of badges) {
-      const { data: badgeData } = await supabase
-        .from("badges")
-        .select("id")
-        .eq("name", badgeName)
-        .maybeSingle();
-
-      if (badgeData) {
-        const { error } = await supabase.from("user_badges").insert({
-          user_id: user.id,
-          badge_id: badgeData.id,
-        });
-        
-        if (!error) {
-          toast.success(`Badge earned: ${badgeName}!`);
-        }
-      }
-    }
-  };
 
   const resetQuiz = () => {
     setCurrentQuestion(0);
@@ -159,8 +114,13 @@ const QuizSection = () => {
   }
 
   return (
-    <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
-      <div className="container mx-auto px-4">
+    <>
+      <AchievementCelebration
+        achievement={celebratingAchievement}
+        onClose={closeCelebration}
+      />
+      <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
+        <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Test Your Eco-Knowledge
@@ -237,6 +197,7 @@ const QuizSection = () => {
         </Card>
       </div>
     </section>
+    </>
   );
 };
 
