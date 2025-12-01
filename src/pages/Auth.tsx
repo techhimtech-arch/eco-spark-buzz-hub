@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Leaf } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -75,7 +76,14 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4 relative">
+      <Link 
+        to="/" 
+        className="absolute top-4 left-4 flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+      >
+        <Leaf className="h-6 w-6" />
+        <span className="font-semibold text-lg">EcoLearn</span>
+      </Link>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">

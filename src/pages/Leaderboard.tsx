@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Award, TrendingUp, Activity, Medal, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Navigation from "@/components/Navigation";
 
 interface LeaderboardUser {
   user_id: string;
@@ -166,7 +167,9 @@ export default function Leaderboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-background py-12 pt-24">
       <div className="container max-w-5xl mx-auto px-4">
         <Card className="mb-8">
           <CardHeader>
@@ -263,5 +266,6 @@ export default function Leaderboard() {
         </Tabs>
       </div>
     </div>
+    </>
   );
 }

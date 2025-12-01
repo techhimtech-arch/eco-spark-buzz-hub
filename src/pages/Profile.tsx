@@ -12,6 +12,7 @@ import { Upload, Calendar, Award, TrendingUp, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAchievements } from "@/hooks/useAchievements";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
+import Navigation from "@/components/Navigation";
 
 interface Profile {
   id: string;
@@ -204,11 +205,12 @@ export default function Profile() {
 
   return (
     <>
+      <Navigation />
       <AchievementCelebration
         achievement={celebratingAchievement}
         onClose={closeCelebration}
       />
-      <div className="min-h-screen bg-background py-12">
+      <div className="min-h-screen bg-background py-12 pt-24">
       <div className="container max-w-4xl mx-auto px-4">
         <Card className="mb-8">
           <CardHeader>
