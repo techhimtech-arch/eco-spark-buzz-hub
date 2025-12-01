@@ -10,6 +10,7 @@ import { Trophy, Award, Leaf, TrendingUp, BookOpen, Target } from "lucide-react"
 import { toast } from "sonner";
 import { useAchievements } from "@/hooks/useAchievements";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
+import Navigation from "@/components/Navigation";
 
 interface DashboardProps {
   user: User;
@@ -95,11 +96,12 @@ export const Dashboard = ({ user }: DashboardProps) => {
 
   return (
     <>
+      <Navigation />
       <AchievementCelebration
         achievement={celebratingAchievement}
         onClose={closeCelebration}
       />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pt-24">
       <h1 className="text-4xl font-bold mb-8">Your Sustainability Journey</h1>
 
       {/* Impact Metrics Cards */}

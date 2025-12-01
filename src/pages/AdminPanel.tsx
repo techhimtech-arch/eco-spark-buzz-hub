@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import Navigation from "@/components/Navigation";
 
 interface AdminPanelProps {
   user: User;
@@ -64,7 +65,9 @@ export const AdminPanel = ({ user }: AdminPanelProps) => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 pt-24">
       <div className="flex items-center gap-3 mb-8">
         <Shield className="h-8 w-8 text-primary" />
         <div>
@@ -92,6 +95,7 @@ export const AdminPanel = ({ user }: AdminPanelProps) => {
           <EventsManager />
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </>
   );
 };
