@@ -14,6 +14,7 @@ const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -39,7 +40,10 @@ const Navigation = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = documentHeight > 0 ? (currentScrollY / documentHeight) * 100 : 0;
       
+      setScrollProgress(progress);
       setIsScrolled(currentScrollY > 10);
       
       if (currentScrollY < 10) {
@@ -73,14 +77,29 @@ const Navigation = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border shadow-sm transition-all duration-300",
         !isVisible && "-translate-y-full",
-        isScrolled && "py-0 shadow-md"
+        isScrolled && "shadow-md bg-card/95"
       )}
     >
+      {/* Scroll Progress Bar */}
+      <div 
+        className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary to-primary/50 transition-all duration-150"
+        style={{ width: `${scrollProgress}%` }}
+      />
+      
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 cursor-pointer">
-            <Leaf className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold text-foreground">EcoLearn</span>
+        <div className={cn(
+          "flex items-center justify-between transition-all duration-300",
+          isScrolled ? "h-12" : "h-16"
+        )}>
+          <Link to="/" className="flex items-center gap-2 cursor-pointer group">
+            <Leaf className={cn(
+              "text-primary transition-all duration-300",
+              isScrolled ? "w-6 h-6" : "w-8 h-8"
+            )} />
+            <span className={cn(
+              "font-bold text-foreground transition-all duration-300",
+              isScrolled ? "text-lg" : "text-xl"
+            )}>EcoLearn</span>
           </Link>
           
           {/* Desktop Navigation */}
