@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useAchievements } from "@/hooks/useAchievements";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
 import Navigation from "@/components/Navigation";
+import { QuizHistory } from "@/components/QuizHistory";
 
 interface Profile {
   id: string;
@@ -293,6 +294,11 @@ export default function Profile() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Quiz History Section */}
+        {user && (
+          <QuizHistory userId={user.id} />
+        )}
 
         <Card>
           <CardHeader>
