@@ -121,6 +121,66 @@ const QuizSection = () => {
     }
   };
 
+  const updateChallengeProgress = async (userId: string) => {
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      
+      // Get active challenges
+      const { data: challenges } = await supabase
+        .from("challenges")
+        .select("*")
+        .lte("start_date", today)
+        .gte("end_date", today);
+
+      if (!challenges?.length) return;
+
+      for (const challenge of challenges) {
+        // Check if user has progress for this challenge
+        const { data: existingProgress } = await supabase
+          .from("user_challenge_progress")
+          .select("*")
+          .eq("user_id", userId)
+          .eq("challenge_id", challenge.id)
+          .single();
+
+        if (existingProgress) {
+          // Update existing progress if not completed
+          if (!existingProgress.completed_at) {
+            const newCount = existingProgress.quizzes_completed + 1;
+            const completed = newCount >= challenge.target_quizzes;
+            
+            await supabase
+              .from("user_challenge_progress")
+              .update({
+                quizzes_completed: newCount,
+                completed_at: completed ? new Date().toISOString() : null,
+              })
+              .eq("id", existingProgress.id);
+
+            if (completed) {
+              toast.success(`🏆 Challenge completed: ${challenge.title}! +${challenge.reward_points} points!`);
+            }
+          }
+        } else {
+          // Create new progress entry
+          const completed = 1 >= challenge.target_quizzes;
+          await supabase.from("user_challenge_progress").insert({
+            user_id: userId,
+            challenge_id: challenge.id,
+            quizzes_completed: 1,
+            completed_at: completed ? new Date().toISOString() : null,
+          });
+
+          if (completed) {
+            toast.success(`🏆 Challenge completed: ${challenge.title}! +${challenge.reward_points} points!`);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error updating challenge progress:", error);
+    }
+  };
+
   const finishQuiz = async () => {
     setShowResult(true);
     
@@ -130,6 +190,9 @@ const QuizSection = () => {
         score: score,
         total_questions: questions.length,
       });
+      
+      // Update challenge progress
+      await updateChallengeProgress(user.id);
       
       setTimeout(() => {
         checkAndAwardAchievements(user.id);
@@ -179,8 +242,8 @@ const QuizSection = () => {
 
   if (loading && quizStarted) {
     return (
-      <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
-        <div className="container mx-auto px-4 text-center">
+      <section id="quiz" className="py-12">
+        <div className="text-center">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -195,8 +258,8 @@ const QuizSection = () => {
   // Difficulty Selection Screen
   if (!quizStarted) {
     return (
-      <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
-        <div className="container mx-auto px-4">
+      <section id="quiz" className="py-8">
+        <div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -210,7 +273,7 @@ const QuizSection = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-4">
             {(Object.keys(DIFFICULTY_CONFIG) as Difficulty[]).map((level, index) => (
               <motion.div
                 key={level}
@@ -262,8 +325,8 @@ const QuizSection = () => {
 
   if (questions.length === 0) {
     return (
-      <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
-        <div className="container mx-auto px-4 text-center">
+      <section id="quiz" className="py-12">
+        <div className="text-center">
           <p className="text-muted-foreground">No quiz questions available for this difficulty. Try another level!</p>
           <Button onClick={resetQuiz} className="mt-4">Choose Different Level</Button>
         </div>
@@ -277,8 +340,8 @@ const QuizSection = () => {
         achievement={celebratingAchievement}
         onClose={closeCelebration}
       />
-      <section id="quiz" className="py-20 bg-gradient-to-br from-primary/10 to-accent/10">
-        <div className="container mx-auto px-4">
+      <section id="quiz" className="py-8">
+        <div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
