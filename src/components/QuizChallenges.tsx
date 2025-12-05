@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Calendar, Target, Clock, Flame, Star } from "lucide-react";
+import { Trophy, Calendar, Target, Clock, Flame, Star, Sparkles, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User } from "@supabase/supabase-js";
 
@@ -94,10 +94,14 @@ export const QuizChallenges = ({ user }: QuizChallengesProps) => {
 
   if (loading) {
     return (
-      <Card className="border-primary/20">
-        <CardContent className="p-6">
+      <Card className="border-0 bg-gradient-to-br from-primary/10 to-accent/10">
+        <CardContent className="p-8">
           <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full"
+            />
           </div>
         </CardContent>
       </Card>
@@ -106,11 +110,14 @@ export const QuizChallenges = ({ user }: QuizChallengesProps) => {
 
   if (challenges.length === 0) {
     return (
-      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <CardContent className="p-6 text-center">
-          <Trophy className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground">No active challenges right now</p>
-          <p className="text-sm text-muted-foreground mt-1">Check back soon for new challenges!</p>
+      <Card className="border-0 bg-gradient-to-br from-muted/50 to-muted/30 overflow-hidden relative">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM5OTkiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <CardContent className="p-8 text-center relative">
+          <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
+            <Trophy className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <p className="text-lg font-medium text-muted-foreground">Koi active challenge nahi hai</p>
+          <p className="text-sm text-muted-foreground mt-1">Jaldi naye challenges aayenge! 🎯</p>
         </CardContent>
       </Card>
     );
@@ -118,9 +125,14 @@ export const QuizChallenges = ({ user }: QuizChallengesProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4">
-        <Flame className="w-6 h-6 text-orange-500" />
-        <h3 className="text-xl font-bold">Active Challenges</h3>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg">
+          <Flame className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <h3 className="text-xl font-display font-bold">Active Challenges</h3>
+          <p className="text-sm text-muted-foreground">Complete karo aur rewards jeeto!</p>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -138,47 +150,52 @@ export const QuizChallenges = ({ user }: QuizChallengesProps) => {
               transition={{ delay: index * 0.1 }}
             >
               <Card
-                className={`relative overflow-hidden transition-all duration-300 ${
+                className={`relative overflow-hidden border-0 transition-all duration-300 hover:shadow-xl ${
                   completed
-                    ? "border-green-500/50 bg-gradient-to-br from-green-500/10 to-emerald-500/5"
-                    : "border-primary/20 hover:border-primary/40 bg-gradient-to-br from-primary/5 to-secondary/5"
+                    ? "bg-gradient-to-br from-emerald-500/20 to-green-500/10"
+                    : "bg-gradient-to-br from-card to-muted/30 hover:-translate-y-1"
                 }`}
               >
+                {/* Decorative corner */}
+                <div className={`absolute top-0 right-0 w-24 h-24 ${completed ? "bg-emerald-500/10" : "bg-primary/5"} rounded-bl-full`} />
+                
                 {completed && (
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-green-500 text-white">
-                      <Star className="w-3 h-3 mr-1" /> Completed!
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-3 right-3"
+                  >
+                    <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 text-white border-0 shadow-lg">
+                      <Sparkles className="w-3 h-3 mr-1" /> Complete!
                     </Badge>
-                  </div>
+                  </motion.div>
                 )}
 
                 <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant={challenge.type === "weekly" ? "default" : "secondary"}
-                        className={
-                          challenge.type === "weekly"
-                            ? "bg-blue-500/20 text-blue-500 border-blue-500/30"
-                            : "bg-purple-500/20 text-purple-500 border-purple-500/30"
-                        }
-                      >
-                        {challenge.type === "weekly" ? (
-                          <Calendar className="w-3 h-3 mr-1" />
-                        ) : (
-                          <Trophy className="w-3 h-3 mr-1" />
-                        )}
-                        {challenge.type}
-                      </Badge>
-                      {!completed && daysRemaining <= 3 && (
-                        <Badge variant="destructive" className="animate-pulse">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {daysRemaining}d left
-                        </Badge>
+                  <div className="flex items-start gap-2 flex-wrap">
+                    <Badge
+                      variant="outline"
+                      className={
+                        challenge.type === "weekly"
+                          ? "bg-blue-500/10 text-blue-600 border-blue-500/30"
+                          : "bg-purple-500/10 text-purple-600 border-purple-500/30"
+                      }
+                    >
+                      {challenge.type === "weekly" ? (
+                        <Calendar className="w-3 h-3 mr-1" />
+                      ) : (
+                        <Trophy className="w-3 h-3 mr-1" />
                       )}
-                    </div>
+                      {challenge.type === "weekly" ? "Weekly" : "Monthly"}
+                    </Badge>
+                    {!completed && daysRemaining <= 3 && (
+                      <Badge variant="destructive" className="animate-pulse">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {daysRemaining} din baaki!
+                      </Badge>
+                    )}
                   </div>
-                  <CardTitle className="text-lg mt-2">{challenge.title}</CardTitle>
+                  <CardTitle className="text-lg mt-3 font-display">{challenge.title}</CardTitle>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
@@ -186,30 +203,42 @@ export const QuizChallenges = ({ user }: QuizChallengesProps) => {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground">
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
                         <Target className="w-4 h-4" />
                         Progress
                       </span>
-                      <span className="font-medium">
-                        {userProgress?.quizzes_completed || 0} / {challenge.target_quizzes} quizzes
+                      <span className="font-semibold">
+                        {userProgress?.quizzes_completed || 0} / {challenge.target_quizzes}
                       </span>
                     </div>
-                    <Progress
-                      value={progressPercent}
-                      className={`h-3 ${completed ? "[&>div]:bg-green-500" : ""}`}
-                    />
+                    <div className="relative">
+                      <Progress
+                        value={progressPercent}
+                        className={`h-3 ${completed ? "[&>div]:bg-gradient-to-r [&>div]:from-emerald-500 [&>div]:to-green-500" : "[&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-accent"}`}
+                      />
+                      {progressPercent > 0 && progressPercent < 100 && (
+                        <motion.div
+                          className="absolute top-0 right-0 -translate-y-1/2"
+                          style={{ left: `${progressPercent}%` }}
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity }}
+                        >
+                          <Zap className="w-4 h-4 text-primary fill-primary" />
+                        </motion.div>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                    <div className="flex items-center gap-2">
-                      <Trophy className="w-4 h-4 text-yellow-500" />
-                      <span className="text-sm font-medium">
+                  <div className="flex items-center justify-between pt-3 border-t border-border/30">
+                    <div className="flex items-center gap-2 bg-warning/10 px-3 py-1.5 rounded-full">
+                      <Trophy className="w-4 h-4 text-warning" />
+                      <span className="text-sm font-bold text-warning">
                         +{challenge.reward_points} points
                       </span>
                     </div>
                     {!completed && (
                       <span className="text-xs text-muted-foreground">
-                        Ends {new Date(challenge.end_date).toLocaleDateString()}
+                        {new Date(challenge.end_date).toLocaleDateString("hi-IN")} tak
                       </span>
                     )}
                   </div>
@@ -221,9 +250,15 @@ export const QuizChallenges = ({ user }: QuizChallengesProps) => {
       </AnimatePresence>
 
       {!user && (
-        <p className="text-center text-sm text-muted-foreground mt-4">
-          Sign in to track your challenge progress!
-        </p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center p-4 rounded-xl bg-primary/5 border border-primary/20"
+        >
+          <p className="text-sm text-muted-foreground">
+            🔐 Sign in karo apna progress track karne ke liye!
+          </p>
+        </motion.div>
       )}
     </div>
   );
