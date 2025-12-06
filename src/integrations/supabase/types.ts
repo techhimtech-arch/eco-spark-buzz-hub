@@ -41,6 +41,35 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_bookmarks: {
+        Row: {
+          blog_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          blog_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          blog_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_bookmarks_blog_id_fkey"
+            columns: ["blog_id"]
+            isOneToOne: false
+            referencedRelation: "blogs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blogs: {
         Row: {
           category: string
@@ -127,6 +156,36 @@ export type Database = {
           },
         ]
       }
+      daily_tasks: {
+        Row: {
+          completed_at: string
+          date_completed: string
+          id: string
+          points_earned: number
+          task_description: string
+          task_type: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          date_completed?: string
+          id?: string
+          points_earned?: number
+          task_description: string
+          task_type: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          date_completed?: string
+          id?: string
+          points_earned?: number
+          task_description?: string
+          task_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           attendee_count: number | null
@@ -171,6 +230,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          total_points: number | null
           updated_at: string | null
         }
         Insert: {
@@ -180,6 +240,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          total_points?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -189,6 +250,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          total_points?: number | null
           updated_at?: string | null
         }
         Relationships: []

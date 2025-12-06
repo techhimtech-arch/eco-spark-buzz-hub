@@ -9,6 +9,11 @@ import { BlogsSection } from "@/components/BlogsSection";
 import EventsSection from "@/components/EventsSection";
 import QuizSection from "@/components/QuizSection";
 import { QuizChallenges } from "@/components/QuizChallenges";
+import { DailyEcoTip } from "@/components/DailyEcoTip";
+import { MiniTasks } from "@/components/MiniTasks";
+import { ImpactCounter } from "@/components/ImpactCounter";
+import { UserLevel } from "@/components/UserLevel";
+import { DidYouKnow } from "@/components/DidYouKnow";
 import { motion } from "framer-motion";
 import { Leaf, Heart, Github, Twitter, Instagram } from "lucide-react";
 
@@ -32,6 +37,72 @@ const Index = () => {
       <Navigation />
       <main className="pt-16">
         <Hero />
+        
+        {/* Daily Engagement Section */}
+        <section className="py-12 relative overflow-hidden bg-gradient-to-br from-muted/50 to-background">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-8"
+            >
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-eco-green/10 text-eco-green text-sm font-medium mb-4">
+                🌱 Daily Dose of Sustainability
+              </span>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
+                Aaj Ka <span className="gradient-text">Eco Action</span>
+              </h2>
+            </motion.div>
+            
+            {/* Daily Tip + Did You Know */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <DailyEcoTip />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <DidYouKnow />
+              </motion.div>
+            </div>
+            
+            {/* Mini Tasks + Level + Impact */}
+            <div className="grid md:grid-cols-3 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+              >
+                <MiniTasks user={user} />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+              >
+                <UserLevel user={user} />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
+                <ImpactCounter user={user} />
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
         <EducationSection />
         <NewsSection />
         <BlogsSection />
