@@ -11,6 +11,8 @@ import { Trophy, RefreshCw, Timer, Zap, Target, ChevronRight, CheckCircle2, XCir
 import { toast } from "sonner";
 import { useAchievements } from "@/hooks/useAchievements";
 import { AchievementCelebration } from "./AchievementCelebration";
+import { CelebrationOverlay } from "./CelebrationOverlay";
+import { useCelebration } from "@/hooks/useCelebration";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -38,6 +40,7 @@ const QuizSection = () => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [answered, setAnswered] = useState(false);
   const { celebratingAchievement, closeCelebration, checkAndAwardAchievements } = useAchievements();
+  const { celebration, triggerCelebration, closeCelebration: closeChallengeCelebration } = useCelebration();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -158,7 +161,13 @@ const QuizSection = () => {
               .eq("id", existingProgress.id);
 
             if (completed) {
-              toast.success(`🏆 Challenge completed: ${challenge.title}! +${challenge.reward_points} points!`);
+              triggerCelebration({
+                type: "challenge",
+                title: challenge.title,
+                description: "Aapne yeh challenge successfully complete kar liya!",
+                icon: "🏆",
+                points: challenge.reward_points,
+              });
             }
           }
         } else {
@@ -172,7 +181,13 @@ const QuizSection = () => {
           });
 
           if (completed) {
-            toast.success(`🏆 Challenge completed: ${challenge.title}! +${challenge.reward_points} points!`);
+            triggerCelebration({
+              type: "challenge",
+              title: challenge.title,
+              description: "Aapne yeh challenge successfully complete kar liya!",
+              icon: "🏆",
+              points: challenge.reward_points,
+            });
           }
         }
       }
@@ -339,6 +354,10 @@ const QuizSection = () => {
       <AchievementCelebration
         achievement={celebratingAchievement}
         onClose={closeCelebration}
+      />
+      <CelebrationOverlay
+        celebration={celebration}
+        onClose={closeChallengeCelebration}
       />
       <section id="quiz" className="py-8">
         <div>
