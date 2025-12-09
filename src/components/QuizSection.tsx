@@ -358,6 +358,7 @@ const QuizSection = () => {
       <CelebrationOverlay
         celebration={celebration}
         onClose={closeChallengeCelebration}
+        userName={user?.email?.split('@')[0] || "Eco Warrior"}
       />
       <section id="quiz" className="py-8">
         <div>
