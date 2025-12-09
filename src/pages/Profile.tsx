@@ -14,6 +14,7 @@ import { useAchievements } from "@/hooks/useAchievements";
 import { AchievementCelebration } from "@/components/AchievementCelebration";
 import Navigation from "@/components/Navigation";
 import { QuizHistory } from "@/components/QuizHistory";
+import { AchievementsGallery } from "@/components/AchievementsGallery";
 
 interface Profile {
   id: string;
@@ -298,6 +299,14 @@ export default function Profile() {
         {/* Quiz History Section */}
         {user && (
           <QuizHistory userId={user.id} />
+        )}
+
+        {/* Achievements Gallery */}
+        {user && (
+          <AchievementsGallery 
+            userId={user.id} 
+            userName={profile?.full_name || profile?.email?.split('@')[0] || "Eco Warrior"} 
+          />
         )}
 
         <Card>
