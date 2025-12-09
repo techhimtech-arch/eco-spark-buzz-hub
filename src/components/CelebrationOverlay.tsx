@@ -1,13 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { X, Sparkles, Trophy, Star, PartyPopper } from "lucide-react";
+import { X, Sparkles, Trophy, Star, PartyPopper, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState, useMemo } from "react";
 import { CelebrationData } from "@/hooks/useCelebration";
+import { ShareableAchievementCard } from "./ShareableAchievementCard";
 
 interface CelebrationOverlayProps {
   celebration: CelebrationData | null;
   onClose: () => void;
+  userName?: string;
 }
 
 const CONFETTI_COLORS = [
@@ -37,8 +39,10 @@ interface ConfettiParticle {
 export const CelebrationOverlay = ({
   celebration,
   onClose,
+  userName,
 }: CelebrationOverlayProps) => {
   const [confetti, setConfetti] = useState<ConfettiParticle[]>([]);
+  const [showShareCard, setShowShareCard] = useState(false);
 
   const particles = useMemo(() => {
     if (!celebration) return [];
@@ -364,10 +368,19 @@ export const CelebrationOverlay = ({
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.6 }}
+                  className="flex gap-3 justify-center"
                 >
                   <Button onClick={onClose} className="mt-4 bg-gradient-to-r from-primary to-accent hover:opacity-90">
                     <Sparkles className="w-4 h-4 mr-2" />
                     Awesome!
+                  </Button>
+                  <Button 
+                    onClick={() => setShowShareCard(true)} 
+                    variant="outline" 
+                    className="mt-4"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share
                   </Button>
                 </motion.div>
               </div>
@@ -375,6 +388,26 @@ export const CelebrationOverlay = ({
           </motion.div>
         </motion.div>
       )}
+
+      {/* Shareable Achievement Card */}
+      <AnimatePresence>
+        {showShareCard && celebration && (
+          <ShareableAchievementCard
+            achievement={{
+              name: celebration.title,
+              description: celebration.description,
+              icon: celebration.icon,
+              type: celebration.type,
+              points: celebration.points,
+            }}
+            userName={userName}
+            onClose={() => {
+              setShowShareCard(false);
+              onClose();
+            }}
+          />
+        )}
+      </AnimatePresence>
     </AnimatePresence>
   );
 };
