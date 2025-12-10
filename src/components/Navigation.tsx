@@ -7,8 +7,11 @@ import { UserProfile } from "./UserProfile";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { LanguageToggle } from "./LanguageToggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navigation = () => {
+  const { t } = useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -117,7 +120,7 @@ const Navigation = () => {
                   !isScrolled && "text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
                 )}
               >
-                {item}
+                {t(item)}
               </Button>
             ))}
             
@@ -127,19 +130,19 @@ const Navigation = () => {
                 <Link to="/dashboard">
                   <Button variant="ghost" size="sm" className={cn(!isScrolled && "text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20")}>
                     <LayoutDashboard className="h-4 w-4 mr-2" />
-                    Dashboard
+                    {t('Dashboard')}
                   </Button>
                 </Link>
                 <Link to="/leaderboard">
                   <Button variant="ghost" size="sm" className={cn(!isScrolled && "text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20")}>
                     <Trophy className="h-4 w-4 mr-2" />
-                    Leaderboard
+                    {t('Leaderboard')}
                   </Button>
                 </Link>
                 <Link to="/profile">
                   <Button variant="ghost" size="sm" className={cn(!isScrolled && "text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20")}>
                     <UserCircle className="h-4 w-4 mr-2" />
-                    Profile
+                    {t('Profile')}
                   </Button>
                 </Link>
               </>
@@ -148,10 +151,11 @@ const Navigation = () => {
               <Link to="/admin">
                 <Button variant="ghost" size="sm" className={cn("text-warning", !isScrolled && "text-warning hover:bg-warning/20")}>
                   <Shield className="h-4 w-4 mr-2" />
-                  Admin
+                  {t('Admin')}
                 </Button>
               </Link>
             )}
+            <LanguageToggle />
             <UserProfile user={user} />
           </div>
 
@@ -180,30 +184,35 @@ const Navigation = () => {
                       className="justify-start text-lg font-medium" 
                       onClick={() => scrollToSection(item.toLowerCase())}
                     >
-                      {item}
+                      {t(item)}
                     </Button>
                   ))}
+                  
+                  <div className="border-t border-border my-4" />
+                  <div className="px-4">
+                    <LanguageToggle />
+                  </div>
                   
                   {user && (
                     <>
                       <div className="border-t border-border my-4" />
-                      <p className="text-sm text-muted-foreground px-4 mb-2">Your Space</p>
+                      <p className="text-sm text-muted-foreground px-4 mb-2">{t('Your Space')}</p>
                       <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="ghost" className="w-full justify-start text-lg">
                           <LayoutDashboard className="h-5 w-5 mr-3" />
-                          Dashboard
+                          {t('Dashboard')}
                         </Button>
                       </Link>
                       <Link to="/leaderboard" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="ghost" className="w-full justify-start text-lg">
                           <Trophy className="h-5 w-5 mr-3" />
-                          Leaderboard
+                          {t('Leaderboard')}
                         </Button>
                       </Link>
                       <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="ghost" className="w-full justify-start text-lg">
                           <UserCircle className="h-5 w-5 mr-3" />
-                          Profile
+                          {t('Profile')}
                         </Button>
                       </Link>
                     </>
@@ -215,7 +224,7 @@ const Navigation = () => {
                       <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="ghost" className="w-full justify-start text-lg text-warning">
                           <Shield className="h-5 w-5 mr-3" />
-                          Admin Panel
+                          {t('Admin')}
                         </Button>
                       </Link>
                     </>
