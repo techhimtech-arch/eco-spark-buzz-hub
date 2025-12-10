@@ -7,11 +7,21 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus, Trash2, Edit } from "lucide-react";
+import { Plus, Trash2, Edit, Upload, FileJson } from "lucide-react";
+
+interface BulkQuestion {
+  question: string;
+  options: string[];
+  correct_answer: number;
+  category: string;
+  difficulty: string;
+}
 
 export const QuizQuestionsManager = () => {
   const [questions, setQuestions] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [bulkJson, setBulkJson] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     question: "",
     option1: "",
@@ -39,6 +49,62 @@ export const QuizQuestionsManager = () => {
     }
 
     setQuestions(data || []);
+  };
+
+  const handleBulkUpload = async () => {
+    if (!bulkJson.trim()) {
+      toast.error("Please paste JSON data");
+      return;
+    }
+
+    try {
+      const parsed: BulkQuestion[] = JSON.parse(bulkJson);
+      
+      if (!Array.isArray(parsed)) {
+        toast.error("JSON must be an array of questions");
+        return;
+      }
+
+      // Validate each question
+      for (let i = 0; i < parsed.length; i++) {
+        const q = parsed[i];
+        if (!q.question || !q.options || q.options.length !== 4 || q.correct_answer === undefined) {
+          toast.error(`Invalid question at index ${i}: must have question, 4 options, and correct_answer`);
+          return;
+        }
+        if (q.correct_answer < 0 || q.correct_answer > 3) {
+          toast.error(`Invalid correct_answer at index ${i}: must be 0-3`);
+          return;
+        }
+      }
+
+      setIsUploading(true);
+
+      const questionsToInsert = parsed.map((q) => ({
+        question: q.question,
+        options: q.options,
+        correct_answer: q.correct_answer,
+        category: q.category || "general",
+        difficulty: q.difficulty || "medium",
+      }));
+
+      const { error } = await supabase
+        .from("quiz_questions")
+        .insert(questionsToInsert);
+
+      if (error) {
+        toast.error("Failed to upload questions: " + error.message);
+        return;
+      }
+
+      toast.success(`${parsed.length} questions uploaded successfully!`);
+      setBulkJson("");
+      fetchQuestions();
+    } catch (e) {
+      toast.error("Invalid JSON format");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,10 +199,52 @@ export const QuizQuestionsManager = () => {
 
   return (
     <div className="space-y-6">
+      {/* Bulk Upload Card */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileJson className="h-5 w-5" />
+            Bulk Upload Questions
+          </CardTitle>
+          <CardDescription>
+            Paste JSON array to add multiple questions at once. Format: 
+            <code className="ml-1 text-xs bg-muted px-1 py-0.5 rounded">
+              {`[{"question": "...", "options": ["A","B","C","D"], "correct_answer": 0, "category": "...", "difficulty": "easy|medium|hard"}]`}
+            </code>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Textarea
+            placeholder='[
+  {
+    "question": "Your question here?",
+    "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+    "correct_answer": 0,
+    "category": "climate",
+    "difficulty": "medium"
+  }
+]'
+            value={bulkJson}
+            onChange={(e) => setBulkJson(e.target.value)}
+            rows={8}
+            className="font-mono text-sm"
+          />
+          <Button 
+            onClick={handleBulkUpload} 
+            disabled={isUploading || !bulkJson.trim()}
+            className="w-full"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            {isUploading ? "Uploading..." : "Upload Questions"}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Single Question Form */}
       <Card>
         <CardHeader>
-          <CardTitle>{editingId ? "Edit Question" : "Add New Question"}</CardTitle>
-          <CardDescription>Create and manage quiz questions</CardDescription>
+          <CardTitle>{editingId ? "Edit Question" : "Add Single Question"}</CardTitle>
+          <CardDescription>Create and manage quiz questions one at a time</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -231,6 +339,7 @@ export const QuizQuestionsManager = () => {
         </CardContent>
       </Card>
 
+      {/* Existing Questions List */}
       <Card>
         <CardHeader>
           <CardTitle>Existing Questions ({questions.length})</CardTitle>
