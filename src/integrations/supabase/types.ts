@@ -186,6 +186,51 @@ export type Database = {
         }
         Relationships: []
       }
+      education_topics: {
+        Row: {
+          bg_gradient: string
+          content: string
+          created_at: string
+          description: string
+          gradient: string
+          icon: string
+          id: string
+          order_index: number
+          published: boolean
+          title: string
+          title_hindi: string | null
+          updated_at: string
+        }
+        Insert: {
+          bg_gradient?: string
+          content: string
+          created_at?: string
+          description: string
+          gradient?: string
+          icon?: string
+          id?: string
+          order_index?: number
+          published?: boolean
+          title: string
+          title_hindi?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bg_gradient?: string
+          content?: string
+          created_at?: string
+          description?: string
+          gradient?: string
+          icon?: string
+          id?: string
+          order_index?: number
+          published?: boolean
+          title?: string
+          title_hindi?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           attendee_count: number | null
