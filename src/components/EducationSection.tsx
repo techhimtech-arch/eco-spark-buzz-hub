@@ -2,57 +2,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Leaf, Droplet, Recycle, Sun, Wind, TreePine, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const educationTopics = [
-  {
-    icon: Recycle,
-    title: "Reduce, Reuse, Recycle",
-    titleHindi: "कम करो, दोबारा इस्तेमाल करो",
-    description: "Waste kam karo aur items ko naya life do creative recycling ke through.",
-    gradient: "from-emerald-500 to-teal-500",
-    bgGradient: "from-emerald-500/10 to-teal-500/10",
-  },
-  {
-    icon: Droplet,
-    title: "Water Conservation",
-    titleHindi: "पानी बचाओ",
-    description: "Ghar pe paani bachane ke simple tarike seekho aur hamari sabse precious resource ko protect karo.",
-    gradient: "from-cyan-500 to-blue-500",
-    bgGradient: "from-cyan-500/10 to-blue-500/10",
-  },
-  {
-    icon: Sun,
-    title: "Renewable Energy",
-    titleHindi: "नवीकरणीय ऊर्जा",
-    description: "Solar, wind aur doosri clean energy solutions explore karo sustainable future ke liye.",
-    gradient: "from-amber-500 to-orange-500",
-    bgGradient: "from-amber-500/10 to-orange-500/10",
-  },
-  {
-    icon: Leaf,
-    title: "Sustainable Living",
-    titleHindi: "टिकाऊ जीवन",
-    description: "Daily life mein eco-friendly choices banao - food se fashion aur transportation tak.",
-    gradient: "from-green-500 to-emerald-500",
-    bgGradient: "from-green-500/10 to-emerald-500/10",
-  },
-  {
-    icon: TreePine,
-    title: "Biodiversity Protection",
-    titleHindi: "जैव विविधता",
-    description: "Ecosystems aur endangered species ko protect karna kitna important hai, ye samjho.",
-    gradient: "from-lime-500 to-green-500",
-    bgGradient: "from-lime-500/10 to-green-500/10",
-  },
-  {
-    icon: Wind,
-    title: "Clean Air Initiatives",
-    titleHindi: "स्वच्छ हवा",
-    description: "Air quality ke baare mein seekho aur apna carbon footprint kaise kam karo effectively.",
-    gradient: "from-sky-500 to-indigo-500",
-    bgGradient: "from-sky-500/10 to-indigo-500/10",
-  },
-];
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  leaf: Leaf,
+  droplet: Droplet,
+  recycle: Recycle,
+  sun: Sun,
+  wind: Wind,
+  "tree-pine": TreePine,
+};
 
 const container = {
   hidden: { opacity: 0 },
@@ -70,6 +33,21 @@ const item = {
 };
 
 const EducationSection = () => {
+  const { language } = useLanguage();
+
+  const { data: topics, isLoading } = useQuery({
+    queryKey: ["education-topics"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("education_topics")
+        .select("*")
+        .eq("published", true)
+        .order("order_index");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <section id="learn" className="py-24 bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
       {/* Decorative Elements */}
@@ -86,56 +64,70 @@ const EducationSection = () => {
         >
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
             <Leaf className="w-4 h-4" />
-            Topics Explore Karo
+            {language === "hi" ? "टॉपिक्स एक्सप्लोर करो" : "Explore Topics"}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4">
-            Sustainability <span className="gradient-text">Seekho</span>
+            {language === "hi" ? "सस्टेनेबिलिटी" : "Sustainability"} <span className="gradient-text">{language === "hi" ? "सीखो" : "Seekho"}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Knowledge se khud ko empower karo aur planet pe positive impact daalo 🌍
+            {language === "hi" 
+              ? "ज्ञान से खुद को सशक्त बनाओ और पृथ्वी पर सकारात्मक प्रभाव डालो 🌍"
+              : "Knowledge se khud ko empower karo aur planet pe positive impact daalo 🌍"}
           </p>
         </motion.div>
         
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {educationTopics.map((topic, index) => {
-            const Icon = topic.icon;
-            return (
-              <motion.div key={index} variants={item}>
-                <Card 
-                  className={`group relative overflow-hidden border-0 bg-gradient-to-br ${topic.bgGradient} hover:shadow-[var(--shadow-hover)] transition-all duration-500 hover:-translate-y-2 cursor-pointer h-full`}
-                >
-                  {/* Hover gradient overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${topic.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                  
-                  <CardHeader className="relative">
-                    <div className={`mb-4 w-16 h-16 rounded-2xl bg-gradient-to-br ${topic.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-8 h-8 text-white" />
-                    </div>
-                    <CardTitle className="text-2xl font-display group-hover:text-primary transition-colors">
-                      {topic.title}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground">{topic.titleHindi}</p>
-                  </CardHeader>
-                  <CardContent className="relative">
-                    <CardDescription className="text-base mb-4">
-                      {topic.description}
-                    </CardDescription>
-                    <Button variant="ghost" className="p-0 h-auto text-primary font-medium group/btn">
-                      Aur Jaano
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} className="h-64 rounded-2xl" />
+            ))}
+          </div>
+        ) : (
+          <motion.div 
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {topics?.map((topic) => {
+              const Icon = iconMap[topic.icon] || Leaf;
+              return (
+                <motion.div key={topic.id} variants={item}>
+                  <Link to={`/learn/${topic.id}`}>
+                    <Card 
+                      className={`group relative overflow-hidden border-0 bg-gradient-to-br ${topic.bg_gradient} hover:shadow-[var(--shadow-hover)] transition-all duration-500 hover:-translate-y-2 cursor-pointer h-full`}
+                    >
+                      {/* Hover gradient overlay */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${topic.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                      
+                      <CardHeader className="relative">
+                        <div className={`mb-4 w-16 h-16 rounded-2xl bg-gradient-to-br ${topic.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                          <Icon className="w-8 h-8 text-white" />
+                        </div>
+                        <CardTitle className="text-2xl font-display group-hover:text-primary transition-colors">
+                          {language === "hi" && topic.title_hindi ? topic.title_hindi : topic.title}
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                          {language === "hi" ? topic.title : topic.title_hindi}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="relative">
+                        <CardDescription className="text-base mb-4">
+                          {topic.description}
+                        </CardDescription>
+                        <Button variant="ghost" className="p-0 h-auto text-primary font-medium group/btn">
+                          {language === "hi" ? "और जानो" : "Aur Jaano"}
+                          <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
     </section>
   );
