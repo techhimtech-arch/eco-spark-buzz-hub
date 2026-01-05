@@ -186,6 +186,60 @@ export type Database = {
         }
         Relationships: []
       }
+      eco_facts: {
+        Row: {
+          active: boolean
+          created_at: string
+          emoji: string | null
+          fact: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          emoji?: string | null
+          fact: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          emoji?: string | null
+          fact?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      eco_tips: {
+        Row: {
+          active: boolean
+          created_at: string
+          emoji: string | null
+          id: string
+          tip: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          tip: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          tip?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       education_topics: {
         Row: {
           bg_gradient: string

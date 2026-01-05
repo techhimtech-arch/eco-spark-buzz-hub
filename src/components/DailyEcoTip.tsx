@@ -3,59 +3,88 @@ import { motion } from "framer-motion";
 import { Lightbulb, RefreshCw } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
-const ECO_TIPS = [
-  "🌱 Aaj plastic bag mat lo — apna cloth bag use karo!",
-  "💧 Brush karte waqt tap band rakho — 6 liters paani bachega!",
-  "🔌 Charger ko unplug karo jab use na ho — phantom power waste mat karo!",
-  "🚶 Short distances ke liye walk karo — health aur planet dono ka fayda!",
-  "🍃 Paper napkins ki jagah cloth napkins use karo!",
-  "♻️ Aaj ek cheez recycle karo — chhoti shuruat badi change laati hai!",
-  "🌿 Indoor plants lagao — air purify hogi aur mood bhi achha rahega!",
-  "🚿 5 minute shower lo — 45 liters paani bacha sakte ho!",
-  "📦 Online shopping kam karo — packaging waste reduce hoga!",
-  "🍱 Khana waste mat karo — leftover ko kal ka lunch banao!",
-  "☀️ Din me natural light use karo — bijli bachao!",
-  "🥤 Reusable bottle carry karo — plastic bottles se bachao environment!",
-  "🌳 Mahine me ek ped lagao — future ke liye gift!",
-  "🛍️ Second-hand items try karo — reduce, reuse, recycle!",
-  "🚲 Cycle chalao — fitness bhi, nature bhi khush!",
-];
+interface EcoTip {
+  id: string;
+  tip: string;
+  emoji: string;
+}
 
 export const DailyEcoTip = () => {
+  const [tips, setTips] = useState<EcoTip[]>([]);
   const [tip, setTip] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const getRandomTip = () => {
-    const randomIndex = Math.floor(Math.random() * ECO_TIPS.length);
-    return ECO_TIPS[randomIndex];
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get tip based on date for consistency throughout the day
-    const today = new Date().toDateString();
-    const storedDate = localStorage.getItem("ecoTipDate");
-    const storedTip = localStorage.getItem("ecoTip");
-
-    if (storedDate === today && storedTip) {
-      setTip(storedTip);
-    } else {
-      const newTip = getRandomTip();
-      setTip(newTip);
-      localStorage.setItem("ecoTipDate", today);
-      localStorage.setItem("ecoTip", newTip);
-    }
+    fetchTips();
   }, []);
 
+  const fetchTips = async () => {
+    const { data, error } = await supabase
+      .from("eco_tips")
+      .select("id, tip, emoji")
+      .eq("active", true);
+
+    if (error) {
+      console.error("Error fetching tips:", error);
+      setLoading(false);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      setTips(data);
+      // Get tip based on date for consistency throughout the day
+      const today = new Date().toDateString();
+      const storedDate = localStorage.getItem("ecoTipDate");
+      const storedTipId = localStorage.getItem("ecoTipId");
+
+      if (storedDate === today && storedTipId) {
+        const savedTip = data.find(t => t.id === storedTipId);
+        if (savedTip) {
+          setTip(savedTip.tip);
+        } else {
+          selectRandomTip(data);
+        }
+      } else {
+        selectRandomTip(data);
+      }
+    }
+    setLoading(false);
+  };
+
+  const selectRandomTip = (tipsArray: EcoTip[]) => {
+    const randomIndex = Math.floor(Math.random() * tipsArray.length);
+    const selectedTip = tipsArray[randomIndex];
+    setTip(selectedTip.tip);
+    localStorage.setItem("ecoTipDate", new Date().toDateString());
+    localStorage.setItem("ecoTipId", selectedTip.id);
+  };
+
   const refreshTip = () => {
+    if (tips.length === 0) return;
     setIsRefreshing(true);
     setTimeout(() => {
-      const newTip = getRandomTip();
-      setTip(newTip);
-      localStorage.setItem("ecoTip", newTip);
+      const randomIndex = Math.floor(Math.random() * tips.length);
+      const newTip = tips[randomIndex];
+      setTip(newTip.tip);
+      localStorage.setItem("ecoTipId", newTip.id);
       setIsRefreshing(false);
     }, 300);
   };
+
+  if (loading) {
+    return (
+      <Card className="p-6 bg-gradient-to-r from-eco-green/10 via-eco-teal/10 to-eco-blue/10 border-eco-green/30">
+        <div className="animate-pulse h-20"></div>
+      </Card>
+    );
+  }
+
+  if (tips.length === 0) {
+    return null;
+  }
 
   return (
     <motion.div

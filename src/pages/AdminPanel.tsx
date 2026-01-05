@@ -7,6 +7,8 @@ import { BlogsManager } from "@/components/admin/BlogsManager";
 import { EventsManager } from "@/components/admin/EventsManager";
 import { ChallengesManager } from "@/components/admin/ChallengesManager";
 import EducationTopicsManager from "@/components/admin/EducationTopicsManager";
+import { EcoTipsManager } from "@/components/admin/EcoTipsManager";
+import { EcoFactsManager } from "@/components/admin/EcoFactsManager";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -79,12 +81,14 @@ export const AdminPanel = ({ user }: AdminPanelProps) => {
       </div>
 
       <Tabs defaultValue="questions" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="questions">Quiz Questions</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-7">
+          <TabsTrigger value="questions">Quiz</TabsTrigger>
           <TabsTrigger value="challenges">Challenges</TabsTrigger>
-          <TabsTrigger value="blogs">Blogs & News</TabsTrigger>
+          <TabsTrigger value="blogs">Blogs</TabsTrigger>
           <TabsTrigger value="events">Events</TabsTrigger>
-          <TabsTrigger value="education">Education Topics</TabsTrigger>
+          <TabsTrigger value="education">Education</TabsTrigger>
+          <TabsTrigger value="eco-tips">Eco Tips</TabsTrigger>
+          <TabsTrigger value="eco-facts">Did You Know</TabsTrigger>
         </TabsList>
 
         <TabsContent value="questions">
@@ -105,6 +109,14 @@ export const AdminPanel = ({ user }: AdminPanelProps) => {
 
         <TabsContent value="education">
           <EducationTopicsManager />
+        </TabsContent>
+
+        <TabsContent value="eco-tips">
+          <EcoTipsManager />
+        </TabsContent>
+
+        <TabsContent value="eco-facts">
+          <EcoFactsManager />
         </TabsContent>
       </Tabs>
       </div>
