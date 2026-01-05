@@ -3,45 +3,75 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
-const ECO_FACTS = [
-  { fact: "🌳 1 tree a year me 118 kg CO₂ absorb karta hai!", emoji: "🌳" },
-  { fact: "♻️ 1 recycled plastic bottle se 3 hours ki laptop energy bachti hai!", emoji: "♻️" },
-  { fact: "🐝 Duniya ka 75% food bees ke pollination pe depend karta hai!", emoji: "🐝" },
-  { fact: "🌊 Oceans 50% oxygen produce karte hain jo hum breathe karte hain!", emoji: "🌊" },
-  { fact: "🔌 Standby appliances 10% electricity waste karte hain!", emoji: "🔌" },
-  { fact: "🚿 1 minute shower me 9 liters paani use hota hai!", emoji: "🚿" },
-  { fact: "📱 Ek smartphone banane me 12,000+ liters paani lagta hai!", emoji: "📱" },
-  { fact: "🌱 Bamboo world ka fastest growing plant hai - 91cm/day!", emoji: "🌱" },
-  { fact: "🦋 Amazon rainforest 20% oxygen produce karta hai!", emoji: "🦋" },
-  { fact: "💡 LED bulbs 75% kam energy use karte hain!", emoji: "💡" },
-  { fact: "🗑️ Plastic decompose hone me 500 saal lagte hain!", emoji: "🗑️" },
-  { fact: "🐘 Elephants trees ke seeds spread karne me help karte hain!", emoji: "🐘" },
-];
+interface EcoFact {
+  id: string;
+  fact: string;
+  emoji: string;
+}
 
 export const DidYouKnow = () => {
+  const [facts, setFacts] = useState<EcoFact[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    fetchFacts();
+  }, []);
+
+  const fetchFacts = async () => {
+    const { data, error } = await supabase
+      .from("eco_facts")
+      .select("id, fact, emoji")
+      .eq("active", true);
+
+    if (error) {
+      console.error("Error fetching facts:", error);
+      setLoading(false);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      setFacts(data);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (!isAutoPlaying || facts.length === 0) return;
     
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % ECO_FACTS.length);
+      setCurrentIndex((prev) => (prev + 1) % facts.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, facts.length]);
 
   const goToNext = () => {
+    if (facts.length === 0) return;
     setIsAutoPlaying(false);
-    setCurrentIndex((prev) => (prev + 1) % ECO_FACTS.length);
+    setCurrentIndex((prev) => (prev + 1) % facts.length);
   };
 
   const goToPrev = () => {
+    if (facts.length === 0) return;
     setIsAutoPlaying(false);
-    setCurrentIndex((prev) => (prev - 1 + ECO_FACTS.length) % ECO_FACTS.length);
+    setCurrentIndex((prev) => (prev - 1 + facts.length) % facts.length);
   };
+
+  if (loading) {
+    return (
+      <Card className="p-6 bg-gradient-to-br from-eco-blue/10 via-eco-teal/10 to-eco-green/10 border-eco-teal/30">
+        <div className="animate-pulse h-24"></div>
+      </Card>
+    );
+  }
+
+  if (facts.length === 0) {
+    return null;
+  }
 
   return (
     <Card className="p-6 bg-gradient-to-br from-eco-blue/10 via-eco-teal/10 to-eco-green/10 border-eco-teal/30 overflow-hidden relative">
@@ -65,7 +95,7 @@ export const DidYouKnow = () => {
             className="text-center"
           >
             <p className="text-lg leading-relaxed">
-              {ECO_FACTS[currentIndex].fact}
+              {facts[currentIndex]?.fact}
             </p>
           </motion.div>
         </AnimatePresence>
@@ -82,7 +112,7 @@ export const DidYouKnow = () => {
         </Button>
         
         <div className="flex gap-1">
-          {ECO_FACTS.map((_, index) => (
+          {facts.map((_, index) => (
             <button
               key={index}
               onClick={() => {
