@@ -14,6 +14,7 @@ import { MiniTasks } from "@/components/MiniTasks";
 import { ImpactCounter } from "@/components/ImpactCounter";
 import { UserLevel } from "@/components/UserLevel";
 import { DidYouKnow } from "@/components/DidYouKnow";
+import { EnvironmentDayBanner } from "@/components/EnvironmentDayBanner";
 import { motion } from "framer-motion";
 import { Leaf, Heart, Github, Twitter, Instagram } from "lucide-react";
 
@@ -37,6 +38,7 @@ const Index = () => {
       <Navigation />
       <main className="pt-16">
         <Hero />
+        <EnvironmentDayBanner />
         
         {/* Daily Engagement Section */}
         <section className="py-12 relative overflow-hidden bg-gradient-to-br from-muted/50 to-background">
