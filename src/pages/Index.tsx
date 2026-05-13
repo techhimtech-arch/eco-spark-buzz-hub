@@ -16,7 +16,9 @@ import { UserLevel } from "@/components/UserLevel";
 import { DidYouKnow } from "@/components/DidYouKnow";
 import { EnvironmentDayBanner } from "@/components/EnvironmentDayBanner";
 import { motion } from "framer-motion";
-import { Leaf, Heart, Github, Twitter, Instagram } from "lucide-react";
+import { Leaf, Heart, Github, Twitter, Instagram, Trophy, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -39,6 +41,31 @@ const Index = () => {
       <main className="pt-16">
         <Hero />
         <EnvironmentDayBanner />
+
+        {/* Guest Quick Quiz CTA */}
+        <section className="py-8">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 p-6 md:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4"
+            >
+              <div>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-2">
+                  <Sparkles className="w-3 h-3" /> No Login Needed
+                </span>
+                <h3 className="text-2xl md:text-3xl font-bold">Quick Quiz · Public Leaderboard 🏆</h3>
+                <p className="text-white/90 mt-1">Bachhe naam daalo, quiz khelo, leaderboard pe chamko!</p>
+              </div>
+              <Link to="/play">
+                <Button size="lg" variant="secondary" className="font-semibold">
+                  <Trophy className="w-4 h-4 mr-2" /> Play Now
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
         
         {/* Daily Engagement Section */}
         <section className="py-12 relative overflow-hidden bg-gradient-to-br from-muted/50 to-background">
