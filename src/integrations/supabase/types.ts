@@ -536,6 +536,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_campaign_leaderboard: {
+        Args: { _end_date: string; _start_date: string }
+        Returns: {
+          avatar_url: string
+          average_percent: number
+          full_name: string
+          rank: number
+          total_questions: number
+          total_quizzes: number
+          total_score: number
+          user_id: string
+        }[]
+      }
       get_leaderboard_data: {
         Args: never
         Returns: {
