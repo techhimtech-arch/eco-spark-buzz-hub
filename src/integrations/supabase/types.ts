@@ -321,6 +321,33 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_quiz_scores: {
+        Row: {
+          completed_at: string
+          difficulty: string
+          id: string
+          player_name: string
+          score: number
+          total_questions: number
+        }
+        Insert: {
+          completed_at?: string
+          difficulty?: string
+          id?: string
+          player_name: string
+          score: number
+          total_questions: number
+        }
+        Update: {
+          completed_at?: string
+          difficulty?: string
+          id?: string
+          player_name?: string
+          score?: number
+          total_questions?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

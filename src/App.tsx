@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
 import TopicDetail from "./pages/TopicDetail";
 import EnvironmentDayLeaderboard from "./pages/EnvironmentDayLeaderboard";
+import GuestQuiz from "./pages/GuestQuiz";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => {
               <Route path="/profile" element={user ? <Profile /> : <Auth />} />
               <Route path="/leaderboard" element={user ? <Leaderboard /> : <Auth />} />
               <Route path="/environment-day" element={<EnvironmentDayLeaderboard />} />
+              <Route path="/play" element={<GuestQuiz />} />
               <Route path="/learn/:id" element={<TopicDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
