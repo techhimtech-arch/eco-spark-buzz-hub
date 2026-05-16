@@ -60,7 +60,22 @@ const Index = () => {
               <p className="text-muted-foreground mt-2">No login needed — bachhe seedha khel sakte hain 🎮</p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
+              <Link to="/games" className="group md:col-span-1">
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className="h-full rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-6 text-white shadow-xl"
+                >
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-3">
+                    <Gamepad2 className="w-3 h-3" /> 5+ Games
+                  </span>
+                  <h3 className="text-2xl font-bold mb-1">Arcade Hub 🕹️</h3>
+                  <p className="text-white/90 text-sm mb-4">Eco Runner, Tree Planter, Garbage Sorting, and more!</p>
+                  <Button variant="secondary" className="font-semibold w-full">
+                    <Gamepad2 className="w-4 h-4 mr-2" /> Enter Arcade
+                  </Button>
+                </motion.div>
+              </Link>
               <Link to="/play" className="group">
                 <motion.div
                   whileHover={{ y: -4 }}

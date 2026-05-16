@@ -18,6 +18,12 @@ import TopicDetail from "./pages/TopicDetail";
 import EnvironmentDayLeaderboard from "./pages/EnvironmentDayLeaderboard";
 import GuestQuiz from "./pages/GuestQuiz";
 import GridLock from "./pages/GridLock";
+import GamesHub from "./pages/GamesHub";
+import GarbageSorting from "./pages/games/GarbageSorting";
+import TreePlanter from "./pages/games/TreePlanter";
+import WaterSaver from "./pages/games/WaterSaver";
+import EcoRunner from "./pages/games/EcoRunner";
+import AnimalRescue from "./pages/games/AnimalRescue";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +61,12 @@ const App = () => {
               <Route path="/environment-day" element={<EnvironmentDayLeaderboard />} />
               <Route path="/play" element={<GuestQuiz />} />
               <Route path="/games/gridlock" element={<GridLock />} />
+              <Route path="/games" element={<GamesHub />} />
+              <Route path="/games/garbage-sorting" element={<GarbageSorting />} />
+              <Route path="/games/tree-planter" element={<TreePlanter />} />
+              <Route path="/games/water-saver" element={<WaterSaver />} />
+              <Route path="/games/eco-runner" element={<EcoRunner />} />
+              <Route path="/games/animal-rescue" element={<AnimalRescue />} />
               <Route path="/learn/:id" element={<TopicDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
