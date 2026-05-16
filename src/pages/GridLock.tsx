@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { ArrowLeft, RotateCcw, HelpCircle, Leaf, Trophy, Cloud } from "lucide-react";
 
 // Tile levels: 1=Seed, 2=Water, 3=Sun, 4=Sapling, 5=Tree, 6=Small Forest, 7=Blooming Ecosystem
-type Tile = { id: number; level: number; row: number; col: number; merged?: boolean; isNew?: boolean };
+type Tile = { id: number; level: number; row: number; col: number; merged: boolean; isNew: boolean };
 type Grid = (Tile | null)[][];
 
 const SIZE = 4;
@@ -43,7 +43,7 @@ function spawn(grid: Grid): Grid {
   const [r, c] = cells[Math.floor(Math.random() * cells.length)];
   const level = (Math.floor(Math.random() * 3) + 1) as 1 | 2 | 3; // Seed, Water, or Sun
   const g = grid.map((row) => row.slice());
-  g[r][c] = { id: newId(), level, row: r, col: c, isNew: true };
+  g[r][c] = { id: newId(), level, row: r, col: c, isNew: true, merged: false };
   return g;
 }
 
@@ -85,7 +85,7 @@ function slide(grid: Grid, dir: Dir): { grid: Grid; moved: boolean; gained: numb
       if (!target.merged && !tile.merged) {
         const res = mergeResult(tile.level, target.level);
         if (res !== null) {
-          g[tr][tc] = { id: newId(), level: res, row: tr, col: tc, merged: true };
+          g[tr][tc] = { id: newId(), level: res, row: tr, col: tc, merged: true, isNew: false };
           g[r][c] = null;
           gained += TILE_META[res].points;
           merges.push({ level: res });
