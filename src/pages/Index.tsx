@@ -16,7 +16,7 @@ import { UserLevel } from "@/components/UserLevel";
 import { DidYouKnow } from "@/components/DidYouKnow";
 import { EnvironmentDayBanner } from "@/components/EnvironmentDayBanner";
 import { motion } from "framer-motion";
-import { Leaf, Heart, Github, Twitter, Instagram, Trophy, Sparkles } from "lucide-react";
+import { Leaf, Heart, Github, Twitter, Instagram, Trophy, Sparkles, Gamepad2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -42,35 +42,57 @@ const Index = () => {
         <Hero />
         <EnvironmentDayBanner />
 
-        {/* Guest Quick Quiz CTA */}
-        <section className="py-8">
+        {/* Games Hub */}
+        <section id="games" className="py-12 scroll-mt-20">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 p-6 md:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4"
+              className="text-center mb-8"
             >
-              <div>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-2">
-                  <Sparkles className="w-3 h-3" /> No Login Needed
-                </span>
-                <h3 className="text-2xl md:text-3xl font-bold">Quick Quiz · Public Leaderboard 🏆</h3>
-                <p className="text-white/90 mt-1">Bachhe naam daalo, quiz khelo, leaderboard pe chamko!</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Link to="/play">
-                  <Button size="lg" variant="secondary" className="font-semibold">
-                    <Trophy className="w-4 h-4 mr-2" /> Quick Quiz
-                  </Button>
-                </Link>
-                <Link to="/games/gridlock">
-                  <Button size="lg" variant="secondary" className="font-semibold">
-                    🌱 GridLock Puzzle
-                  </Button>
-                </Link>
-              </div>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-700 text-sm font-medium mb-4">
+                <Gamepad2 className="w-4 h-4" /> Games Zone
+              </span>
+              <h2 className="text-3xl md:text-4xl font-display font-bold">
+                Play & Learn <span className="gradient-text">Sustainability</span>
+              </h2>
+              <p className="text-muted-foreground mt-2">No login needed — bachhe seedha khel sakte hain 🎮</p>
             </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <Link to="/play" className="group">
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className="h-full rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-sky-500 p-6 text-white shadow-xl"
+                >
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-3">
+                    <Sparkles className="w-3 h-3" /> Public Leaderboard
+                  </span>
+                  <h3 className="text-2xl font-bold mb-1">Quick Quiz 🏆</h3>
+                  <p className="text-white/90 text-sm mb-4">3 difficulty levels, 10 questions, top 50 leaderboard.</p>
+                  <Button variant="secondary" className="font-semibold">
+                    <Trophy className="w-4 h-4 mr-2" /> Play Quiz
+                  </Button>
+                </motion.div>
+              </Link>
+
+              <Link to="/games/gridlock" className="group">
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className="h-full rounded-2xl bg-gradient-to-br from-lime-400 via-emerald-500 to-amber-400 p-6 text-white shadow-xl"
+                >
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-3">
+                    🌱 Puzzle Game
+                  </span>
+                  <h3 className="text-2xl font-bold mb-1">GridLock: Nature's Order</h3>
+                  <p className="text-white/90 text-sm mb-4">2048-style puzzle. Seed + Water + Sun → grow a Blooming Ecosystem.</p>
+                  <Button variant="secondary" className="font-semibold">
+                    <Gamepad2 className="w-4 h-4 mr-2" /> Play Puzzle
+                  </Button>
+                </motion.div>
+              </Link>
+            </div>
           </div>
         </section>
         
@@ -214,7 +236,7 @@ const Index = () => {
             <div>
               <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                {["Learn", "Quiz", "Events", "Leaderboard"].map((link) => (
+                {["Learn", "Quiz", "Games", "Events", "Leaderboard"].map((link) => (
                   <li key={link}>
                     <a href={`#${link.toLowerCase()}`} className="text-muted-foreground hover:text-primary transition-colors">
                       {link}

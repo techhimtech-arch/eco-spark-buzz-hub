@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Leaf, LayoutDashboard, Shield, UserCircle, Trophy, Menu, Sparkles } from "lucide-react";
+import { Leaf, LayoutDashboard, Shield, UserCircle, Trophy, Menu, Sparkles, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "./UserProfile";
 import { Link } from "react-router-dom";
@@ -123,6 +123,16 @@ const Navigation = () => {
                 {t(item)}
               </Button>
             ))}
+            <Button
+              variant="ghost"
+              onClick={() => scrollToSection("games")}
+              className={cn(
+                "font-medium transition-all duration-300",
+                !isScrolled && "text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+              )}
+            >
+              <Gamepad2 className="h-4 w-4 mr-1" /> {t('Games')}
+            </Button>
             
             {user && (
               <>
@@ -187,6 +197,13 @@ const Navigation = () => {
                       {t(item)}
                     </Button>
                   ))}
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-lg font-medium"
+                    onClick={() => scrollToSection("games")}
+                  >
+                    <Gamepad2 className="h-5 w-5 mr-3" /> {t('Games')}
+                  </Button>
                   
                   <div className="border-t border-border my-4" />
                   <div className="px-4">
