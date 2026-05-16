@@ -49,6 +49,15 @@ const GAMES = [
     path: "/games/animal-rescue",
     tags: ["Puzzle", "Nature"],
   },
+  {
+    id: "eco-memory",
+    title: "Eco Memory Quest",
+    description: "Match eco-themed cards before time runs out!",
+    color: "bg-gradient-to-br from-indigo-400 to-purple-600",
+    icon: <Sparkles className="w-8 h-8 text-white" />,
+    path: "/games/eco-memory",
+    tags: ["Memory", "Puzzle"],
+  },
 ];
 
 export default function GamesHub() {

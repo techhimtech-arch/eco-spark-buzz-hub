@@ -24,6 +24,7 @@ import TreePlanter from "./pages/games/TreePlanter";
 import WaterSaver from "./pages/games/WaterSaver";
 import EcoRunner from "./pages/games/EcoRunner";
 import AnimalRescue from "./pages/games/AnimalRescue";
+import EcoMemory from "./pages/games/EcoMemory";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => {
               <Route path="/games/water-saver" element={<WaterSaver />} />
               <Route path="/games/eco-runner" element={<EcoRunner />} />
               <Route path="/games/animal-rescue" element={<AnimalRescue />} />
+              <Route path="/games/eco-memory" element={<EcoMemory />} />
               <Route path="/learn/:id" element={<TopicDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

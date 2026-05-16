@@ -60,8 +60,8 @@ const Index = () => {
               <p className="text-muted-foreground mt-2">No login needed — bachhe seedha khel sakte hain 🎮</p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              <Link to="/games" className="group md:col-span-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link to="/games" className="group">
                 <motion.div
                   whileHover={{ y: -4 }}
                   className="h-full rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-6 text-white shadow-xl"
@@ -104,6 +104,22 @@ const Index = () => {
                   <p className="text-white/90 text-sm mb-4">2048-style puzzle. Seed + Water + Sun → grow a Blooming Ecosystem.</p>
                   <Button variant="secondary" className="font-semibold">
                     <Gamepad2 className="w-4 h-4 mr-2" /> Play Puzzle
+                  </Button>
+                </motion.div>
+              </Link>
+
+              <Link to="/games/eco-memory" className="group">
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className="h-full rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-6 text-white shadow-xl"
+                >
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-3">
+                    <Sparkles className="w-3 h-3" /> Memory Puzzle
+                  </span>
+                  <h3 className="text-2xl font-bold mb-1">Eco Memory Quest</h3>
+                  <p className="text-white/90 text-sm mb-4">Match eco-themed cards before time runs out! Train your brain and save the planet.</p>
+                  <Button variant="secondary" className="font-semibold">
+                    <Gamepad2 className="w-4 h-4 mr-2" /> Play Memory
                   </Button>
                 </motion.div>
               </Link>
