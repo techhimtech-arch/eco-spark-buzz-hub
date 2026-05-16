@@ -58,11 +58,18 @@ const Index = () => {
                 <h3 className="text-2xl md:text-3xl font-bold">Quick Quiz · Public Leaderboard 🏆</h3>
                 <p className="text-white/90 mt-1">Bachhe naam daalo, quiz khelo, leaderboard pe chamko!</p>
               </div>
-              <Link to="/play">
-                <Button size="lg" variant="secondary" className="font-semibold">
-                  <Trophy className="w-4 h-4 mr-2" /> Play Now
-                </Button>
-              </Link>
+              <div className="flex flex-wrap gap-2">
+                <Link to="/play">
+                  <Button size="lg" variant="secondary" className="font-semibold">
+                    <Trophy className="w-4 h-4 mr-2" /> Quick Quiz
+                  </Button>
+                </Link>
+                <Link to="/games/gridlock">
+                  <Button size="lg" variant="secondary" className="font-semibold">
+                    🌱 GridLock Puzzle
+                  </Button>
+                </Link>
+              </div>
             </motion.div>
           </div>
         </section>
