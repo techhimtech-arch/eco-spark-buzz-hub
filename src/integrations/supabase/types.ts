@@ -327,6 +327,7 @@ export type Database = {
           difficulty: string
           id: string
           player_name: string
+          referred_by: string | null
           score: number
           total_questions: number
         }
@@ -335,6 +336,7 @@ export type Database = {
           difficulty?: string
           id?: string
           player_name: string
+          referred_by?: string | null
           score: number
           total_questions: number
         }
@@ -343,6 +345,7 @@ export type Database = {
           difficulty?: string
           id?: string
           player_name?: string
+          referred_by?: string | null
           score?: number
           total_questions?: number
         }

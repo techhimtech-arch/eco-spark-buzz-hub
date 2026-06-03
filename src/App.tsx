@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { captureRefFromUrl } from "@/lib/referral";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -32,6 +33,7 @@ const App = () => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    captureRefFromUrl();
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });

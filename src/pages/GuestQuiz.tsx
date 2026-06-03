@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
+import { ShareScoreCard } from "@/components/ShareScoreCard";
+import { getReferrer } from "@/lib/referral";
 
 type Difficulty = "easy" | "medium" | "hard";
 
@@ -45,6 +47,7 @@ const GuestQuiz = () => {
   const [submitted, setSubmitted] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [board, setBoard] = useState<any[]>([]);
+  const [showShare, setShowShare] = useState(false);
 
   const fetchLeaderboard = useCallback(async () => {
     const { data } = await supabase
@@ -143,6 +146,7 @@ const GuestQuiz = () => {
         score,
         total_questions: questions.length,
         difficulty,
+        referred_by: getReferrer(),
       })
       .select()
       .single();
@@ -154,6 +158,7 @@ const GuestQuiz = () => {
     setSubmittedId(data?.id ?? null);
     toast.success("Aap leaderboard pe aa gaye! 🏆");
     await fetchLeaderboard();
+    setShowShare(true);
     setStage("leaderboard");
   };
 
@@ -373,14 +378,33 @@ const GuestQuiz = () => {
                 </CardContent>
               </Card>
               <div className="text-center mt-6">
-                <Button size="lg" onClick={() => setStage("intro")}>
-                  <Sparkles className="w-4 h-4 mr-2" /> Play Again
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  {submitted && (
+                    <Button size="lg" variant="outline" onClick={() => setShowShare(true)}>
+                      <Trophy className="w-4 h-4 mr-2" /> Share my Card
+                    </Button>
+                  )}
+                  <Button size="lg" onClick={() => setStage("intro")}>
+                    <Sparkles className="w-4 h-4 mr-2" /> Play Again
+                  </Button>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      {showShare && (
+        <ShareScoreCard
+          playerName={playerName}
+          score={score}
+          total={questions.length}
+          label="Quick Eco Quiz"
+          emoji="🌱"
+          subline={`${difficulty} level`}
+          onClose={() => setShowShare(false)}
+          sharePath="/play"
+        />
+      )}
     </div>
   );
 };
