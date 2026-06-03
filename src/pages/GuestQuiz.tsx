@@ -378,9 +378,16 @@ const GuestQuiz = () => {
                 </CardContent>
               </Card>
               <div className="text-center mt-6">
-                <Button size="lg" onClick={() => setStage("intro")}>
-                  <Sparkles className="w-4 h-4 mr-2" /> Play Again
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  {submitted && (
+                    <Button size="lg" variant="outline" onClick={() => setShowShare(true)}>
+                      <Trophy className="w-4 h-4 mr-2" /> Share my Card
+                    </Button>
+                  )}
+                  <Button size="lg" onClick={() => setStage("intro")}>
+                    <Sparkles className="w-4 h-4 mr-2" /> Play Again
+                  </Button>
+                </div>
               </div>
             </motion.div>
           )}
