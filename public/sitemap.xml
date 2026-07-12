@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://learn.himsols.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://learn.himsols.com/play</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://learn.himsols.com/games</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://learn.himsols.com/games/gridlock</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learn.himsols.com/games/eco-memory</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learn.himsols.com/games/garbage-sorting</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learn.himsols.com/games/tree-planter</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learn.himsols.com/games/water-saver</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learn.himsols.com/games/eco-runner</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learn.himsols.com/games/animal-rescue</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learn.himsols.com/environment-day</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://learn.himsols.com/auth</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>
